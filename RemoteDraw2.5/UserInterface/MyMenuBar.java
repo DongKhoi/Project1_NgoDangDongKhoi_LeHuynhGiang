@@ -1,11 +1,16 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -14,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -72,23 +78,38 @@ public class MyMenuBar extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		SavePaint();
-		
+		//OpenPaint();
 	}
 	 public void SavePaint() 
 	 {
-		 BufferedImage image2 = new BufferedImage(myCanvas.getWidth(),myCanvas.getHeight(),BufferedImage.TYPE_BYTE_INDEXED);
-		 JFileChooser jFile = new JFileChooser();
-		 jFile.showSaveDialog(null);
-		 Path pth = jFile.getSelectedFile().toPath();
-		 JOptionPane.showMessageDialog(null, pth.toString());
-		 Graphics2D graphics2D = image2.createGraphics();
-		 myCanvas.paint(graphics2D);
-		 myCanvas.setBackground(Color.WHITE);
+		 
 		 try {
-		     ImageIO.write(image2, "jpg", new File(pth.toString()+".jpg"));
-		 } catch (IOException ox) {
-		     // TODO: handle exception
-		     ox.printStackTrace();
-		 }
+		        BufferedImage image = new BufferedImage(myCanvas.getWidth(),
+		                myCanvas.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+		        JFileChooser jFile = new JFileChooser();
+		        jFile.showSaveDialog(null);
+		        Path pth = jFile.getSelectedFile().toPath();
+		        JOptionPane.showMessageDialog(null, pth.toString()+".png");
+		        Graphics g = image.getGraphics();
+		        myCanvas.printAll(g);
+		        g.dispose();
+		        ImageIO.write(image, "png", new File(pth.toString()+".png"));
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
 	 }
+	 public void OpenPaint() {
+		 
+		 BufferedImage bi = null;
+         //System.err.println("....setimg...." + fileName);
+
+         try {
+             bi = ImageIO.read(new File("D://moa.png")); 
+
+         } catch (IOException e) {
+             e.printStackTrace();
+             System.out.println("Image could not be read");
+             System.exit(1);
+         }
+	}
 }
